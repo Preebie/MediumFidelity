@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reddit (Real)</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 20px;
+        }
+
+        header {
+            background-color: #ff4500;
+            color: white;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            position: sticky;
+            top: 0;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .search-box {
+            flex-grow: 1;
+            margin: 0 25px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding-top: 10px;
+            padding-bottom: 10px;
+            padding-left: 10px;
+            padding-right: 0px;
+            border: none;
+            border-radius: 10px;
+            background-color: #333;
+            color: #e0e0e0;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        main {
+            display: flex;
+            padding: 20px;
+        }
+
+        .sidebar {
+            flex: 1;
+            background-color: #1e1e1e;
+            padding: 15px;
+            border-radius: 5px;
+            margin-right: 20px;
+            display: none;
+        }
+
+        .post {
+            flex: 3;
+            background-color: #1e1e1e;
+            padding: 30px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+            max-width: fit-content;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .post-header {
+            font-size: 12px;
+            color: #b0b0b0;
+        }
+
+        .post-title {
+            font-size: 24px;
+            margin: 10px 0 5px 0;
+            color: #ffffff;
+        }
+
+        .subreddit-image {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+
+        .username {
+            margin-top: 5px;
+            font-size: 12px;
+        }
+
+        .post-content img {
+            width: 100%;
+            max-width: 2400px;
+            height: auto;
+            border-radius: 5px;
+
+        }
+
+        .post-buttons {
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .comment-input {
+            flex-grow: 1;
+            padding: 5px;
+            border: 1px solid #444;
+            border-radius: 3px;
+            background-color: #333;
+            color: #e0e0e0;
+        }
+
+        .post-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .post-button img {
+            width: 24px;
+            height: 24px;
+            margin-left: 0%;
+            transition: transform 0.3s;
+        }
+
+        .comment-buttons {
+            background: none;
+            border: none;
+            cursor: pointer;
+        }
+
+        .comment-buttons img {
+            width: 18px;
+            height: 18px;
+            transition: transform 0.3s;
+        }
+
+        .post-button:hover img {
+            transform: scale(1.1);
+        }
+
+        .comment-buttons:hover img {
+            transform: scale(1.1);
+        }
+
+        .video-container {
+            width: 100%;
+        }
+
+
+
+    </style>
+</head>
+
+<body>
+    <header class="header">
+
+        <img src="./static/reddit-logo.svg" alt="Logo Image" height="50px" width="50px">
+        <div class="logo">Reddit</div>
+        <div class="search-box">
+            <input type="text" placeholder="Search...">
+        </div>
+        <nav class="nav-links">
+            <a href="#" style="color: white;">Login</a>
+            <a href="#" style="color: white;">Sign Up</a>
+        </nav>
+    </header>
+
+    <main>
+        <div>
+
+        </div>
+        <div class="post" id="post-container">
+        </div>
+    </main>
+
+    <script>
+        const posts = [
+            {
+                subreddit: 'r/photography',
+                username: 'u/Preebie',
+                title: 'What does everyone think of this picture?',
+                content: '<img src="/static/post-one.jpg" alt="Post Image">',
+                image: './static/sub-one.jpg',
+                comments: [
+                    { username: 'u/whoapeacocks', text: "Wow, what a majestic and cool animal" },
+                    { username: 'u/letspeacock', text: "Lol peacock" },
+                    { username: 'u/Ilikeanimals', text: "I like its feathers" },
+                    { username: 'u/HandingOutFliers', text: "POV you don't fly moment" }
+                ]
+            },
+            {
+                subreddit: 'r/coolcat',
+                username: 'u/PricklyPoppy',
+                title: 'I love cats, they are so cool.',
+                content: '<h1>Why I Absolutely Adore Cool Cats: A Feline Fan’s Perspective</h1><p>Hey, fellow cat enthusiasts! Today, I want to take a moment to share my love for our feline friends—specifically, the cool cats that strut around with an air of confidence and charm. If you’re a cat lover like me, you know exactly what I’m talking about. There’s something about their attitude, their quirks, and their mysterious demeanor that makes them truly special. So, grab a cup of coffee, curl up with your favorite kitty, and let me tell you why cool cats have stolen my heart.</p><h2>The Unique Charm of Cool Cats</h2><p>First and foremost, let’s define what I mean by “cool cats.” These are the cats who seem to know they’re special. They don’t just lounge around; they own the space they occupy. You know the ones—those cats who nonchalantly walk across your laptop keyboard as if they’re the ones working. They flaunt their elegance and grace, making even the most mundane activities seem stylish. Whether they’re lounging in a sunbeam or perched atop a bookshelf, cool cats exude a sense of self-assurance that’s hard to resist.</p><h2>Their Unpredictable Personalities</h2><p>What I love most about cool cats is their unpredictability. One moment, they’re aloof, surveying their kingdom with a haughty glare, and the next, they’re rolling on the floor, playing with a crumpled piece of paper like it’s the most exciting thing in the world. This duality keeps us on our toes and makes every interaction unique. One of my cool cats, a sleek black feline named Luna, has a habit of pretending she doesn’t care when I call her. But as soon as I pick up her favorite toy, she transforms into a playful tornado, zooming around the house with pure joy.</p><h2>The Connection We Share</h2><p>There’s something magical about the bond between a cat and their human. Cool cats have an uncanny ability to sense our moods and respond accordingly. They know when we need a little pick-me-up or when we want to relax. My other cat, a charming tabby named Oliver, has a knack for curling up next to me on the couch whenever I’m feeling down. His soothing purrs and warm presence remind me that I’m never alone, and that connection is invaluable.</p><h2>The Quirky Habits That Make Them Unique</h2><p>Every cool cat has their quirks, and those little idiosyncrasies only add to their charm. Some cats have strange eating habits, like only eating their food if it’s placed in a certain spot. Others have favorite toys that they treat like royalty. I once watched Luna drag a stuffed mouse around the house as if it were her prized possession. These quirks remind us that our cats are individuals with their own personalities and preferences, which makes the relationship even more special.</p><h2>The Way They Make Us Laugh</h2><p>Cool cats also have an incredible knack for making us laugh. Whether it’s their clumsy antics while chasing a laser pointer or their hilarious reactions to everyday objects (like the infamous vacuum cleaner), they never fail to bring a smile to my face. I can’t tell you how many times I’ve burst into laughter watching Oliver get into a box that’s far too small for him, determined to make it work. Their ability to find joy in the simplest things is a great reminder for us all to appreciate life’s little moments.</p><h2>A Source of Comfort</h2><p>In today’s fast-paced world, cool cats provide us with a much-needed sense of comfort. There’s nothing quite like curling up with a furry companion after a long day. The simple act of stroking their soft fur can reduce stress and anxiety, making us feel more grounded. My evenings often involve a cozy blanket, a good book, and one of my cool cats nestled by my side. It’s a routine that brings me immense joy and tranquility.</p><h2>In Conclusion: Celebrating Our Cool Cats</h2><p>In conclusion, cool cats are more than just pets; they’re family members who enrich our lives in countless ways. Their unique personalities, unpredictable behaviors, and comforting presence remind us of the beauty of companionship. As cat lovers, we’re fortunate to share our lives with these incredible creatures who fill our days with laughter, love, and warmth. So, let’s celebrate our cool cats and the joy they bring us every single day! Share your own stories about your cool cats in the comments—I can’t wait to hear about your feline friends!</p><p>Thanks for reading, and I hope this post inspires you to appreciate your cool cats even more!</p>',
+                image: './static/sub-two.jpg',
+                comments: [
+                    { username: 'u/ewcats23', text: "Cats are gross" },
+                    { username: 'u/letscat', text: "Lol cat" },
+                    { username: 'u/Ilikeanimals', text: "I like its furs" },
+                    { username: 'u/HandingOutFliers', text: "POV you don't fly moment" }
+                ]
+            },
+            {
+                subreddit: 'r/moonman',
+                username: 'u/GallowNoob',
+                title: 'I am a GOD!',
+                content: 'How much karma does everyone have? I think I have the most to be honest. Let me know if you have more than me (you don\'t).',
+                image: './static/sub-three.jpg',
+                comments: [
+                    { username: 'u/reallifebetterfrfr', text: "You are such a loser, get a life lmao" },
+                    { username: 'u/nolifer2016', text: "Omg your so cool will you plz mod my subreddit??" },
+                    { username: 'u/HandingOutFliers', text: "POV you don't fly moment" }
+                ]
+
+            },
+            {
+                subreddit: 'r/homieworkhelp',
+                username: 'u/schoolsucks123',
+                title: 'I have a very simple math question, please help me',
+                content: '<img src="/static/post-two.jpg" alt="Post Image">',
+                image: './static/sub-four.jpg',
+                comments: [
+    { username: 'u/condescensionspeltwrong', text: "This is literally so easy, are people really struggling with this?" },
+    { username: 'u/teachertheteach', text: "What grade are you in? Should you be on the internet?" },
+    { username: 'u/HandingOutFliers', text: "POV you don't fly moment" }
+]
+
+            },
+            {
+                subreddit: 'r/botshenanigans',
+                username: 'u/notabot',
+                title: 'Why did the chicken cross the road?',
+                content: 'It didn\'t.',
+                image: './static/sub-five.jpg',
+                comments: [
+                    { username: 'u/funnyman63', text: "Not funny" },
+                    { username: 'u/alsonotabot', text: "Are you a bot? You look like a bot." },
+                    { username: 'u/HandingOutFliers', text: "POV you don't fly moment" }
+                ]
+
+            },
+            {
+                subreddit: 'r/viddyOs',
+                username: 'u/posterofvids3000',
+                title: 'Check out this guy making videos',
+                content: '<video class="video-container" autoplay controls muted>  <source src="./static/video.mp4" type="video/mp4"> Your browser does not support the video tag.</video>',
+                image: './static/sub-six.jpg',
+                comments: [
+                    { username: 'u/RickAstley', text: "I literally hate you" },
+                    { username: 'u/WalterWhitman', text: "There is not enough anger in my body for a degenerate piece of filth like OP" },
+                    { username: 'u/WormsOnTheBrain', text: "I hope you get a brain eating flesh worm" },
+                    { username: 'u/HandingOutFliers', text: "I don't even care if you fly anymore, I hope you fall" }
+                ]
+            }
+        ];
+
+        let currentPostIndex = 0;
+
+        function displayPost(index) {
+            const postContainer = document.getElementById('post-container');
+            const post = posts[index];
+
+            const commentsHtml = post.comments.map(comment => `
+        <div class="comment">
+            <strong>${comment.username}</strong> <br> ${comment.text} <br>
+            <button class = "comment-buttons comment-button"><img src="static/comment-icon.png" alt="Comment" /></button>
+            <button class = "comment-buttons share-button"><img src="static/share-icon.png" alt="Share" /></button>
+            <button class="comment-buttons like-button">
+                <img src="./static/heart-icon.png" alt="Like" />
+            </button>
+        </div>
+    `).join('');
+
+            postContainer.innerHTML = `
+        <div class="post-header">
+            <img src="${post.image}" alt="Subreddit" class="subreddit-image">
+            <strong>${post.subreddit}</strong>
+        </div>
+        <div class="username">
+            <strong>&emsp;&emsp;${post.username}</strong>
+        </div>
+        <div class="post-title">${post.title}</div>
+        <hr style="border: 1px solid #444; margin: 10px 0;">
+        <div class="post-content">${post.content}</div>
+        <div class="post-buttons">
+            <input type="text" class="comment-input" placeholder="Add a comment..." />
+            <button class="post-button comment-button" onclick="toggleComments(${index})">
+                <img src="static/comment-icon.png" alt="Comment" />
+            </button>
+            <button class="post-button share-button">
+                <img src="static/share-icon.png" alt="Share" />
+            </button>
+            <button class="post-button like-button">
+                <img src="static/heart-icon.png" alt="Like" />
+            </button>
+        </div>
+        <!-- Hidden comments section initially -->
+        <div id="comments-section-${index}" class="comments-section" style="display: none;">
+            ${commentsHtml}
+        </div>
+    `;
+        }
+
+
+
+        displayPost(currentPostIndex);
+
+        function toggleComments(index) {
+            const commentsSection = document.getElementById(`comments-section-${index}`);
+            commentsSection.style.display = commentsSection.style.display === 'none' ? 'block' : 'none';
+        };
+
+
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'ArrowDown') {
+                currentPostIndex = (currentPostIndex + 1) % posts.length;
+                displayPost(currentPostIndex);
+            } else if (event.key === 'ArrowUp') {
+                currentPostIndex = (currentPostIndex - 1 + posts.length) % posts.length;
+                displayPost(currentPostIndex);
+            }
+        });
+
+        document.querySelector('.search-box input').addEventListener('input', function () {
+            console.log('Searching for:', this.value);
+        });
+
+        document.addEventListener('swiped-down', function (e) {
+            currentPostIndex = (currentPostIndex - 1 + posts.length) % posts.length;
+            displayPost(currentPostIndex);
+        });
+        document.addEventListener('swiped-up', function (e) {
+            currentPostIndex = (currentPostIndex + 1) % posts.length;
+            displayPost(currentPostIndex);
+        });
+
+        /*!
+ * swiped-events.js - v@version@
+ * Pure JavaScript swipe events
+ * https://github.com/john-doherty/swiped-events
+ * @inspiration https://stackoverflow.com/questions/16348031/disable-scrolling-when-touch-moving-certain-element
+ * @author John Doherty <www.johndoherty.info>
+ * @license MIT
+ * TOOK THIS FROM STACKOVERFLOW!!! - PREEBIE
+ */
+        (function (window, document) {
+
+            'use strict';
+
+            // patch CustomEvent to allow constructor creation (IE/Chrome)
+            if (typeof window.CustomEvent !== 'function') {
+
+                window.CustomEvent = function (event, params) {
+
+                    params = params || { bubbles: false, cancelable: false, detail: undefined };
+
+                    var evt = document.createEvent('CustomEvent');
+                    evt.initCustomEvent(event, params.bubbles, params.cancelable, params.detail);
+                    return evt;
+                };
+
+                window.CustomEvent.prototype = window.Event.prototype;
+            }
+
+            document.addEventListener('touchstart', handleTouchStart, false);
+            document.addEventListener('touchmove', handleTouchMove, false);
+            document.addEventListener('touchend', handleTouchEnd, false);
+
+            var xDown = null;
+            var yDown = null;
+            var xDiff = null;
+            var yDiff = null;
+            var timeDown = null;
+            var startEl = null;
+            var touchCount = 0;
+
+            /**
+             * Fires swiped event if swipe detected on touchend
+             * @param {object} e - browser event object
+             * @returns {void}
+             */
+            function handleTouchEnd(e) {
+
+                // if the user released on a different target, cancel!
+                if (startEl !== e.target) return;
+
+                var swipeThreshold = parseInt(getNearestAttribute(startEl, 'data-swipe-threshold', '100'), 10); // default 20 units
+                var swipeUnit = getNearestAttribute(startEl, 'data-swipe-unit', 'px'); // default px
+                var swipeTimeout = parseInt(getNearestAttribute(startEl, 'data-swipe-timeout', '500'), 10);    // default 500ms
+                var timeDiff = Date.now() - timeDown;
+                var eventType = '';
+                var changedTouches = e.changedTouches || e.touches || [];
+
+                if (swipeUnit === 'vh') {
+                    swipeThreshold = Math.round((swipeThreshold / 100) * document.documentElement.clientHeight); // get percentage of viewport height in pixels
+                }
+                if (swipeUnit === 'vw') {
+                    swipeThreshold = Math.round((swipeThreshold / 100) * document.documentElement.clientWidth); // get percentage of viewport height in pixels
+                }
+
+                if (Math.abs(xDiff) > Math.abs(yDiff)) { // most significant
+                    if (Math.abs(xDiff) > swipeThreshold && timeDiff < swipeTimeout) {
+                        if (xDiff > 0) {
+                            eventType = 'swiped-left';
+                        }
+                        else {
+                            eventType = 'swiped-right';
+                        }
+                    }
+                }
+                else if (Math.abs(yDiff) > swipeThreshold && timeDiff < swipeTimeout) {
+                    if (yDiff > 0) {
+                        eventType = 'swiped-up';
+                    }
+                    else {
+                        eventType = 'swiped-down';
+                    }
+                }
+
+                if (eventType !== '') {
+
+                    var eventData = {
+                        dir: eventType.replace(/swiped-/, ''),
+                        touchType: (changedTouches[0] || {}).touchType || 'direct',
+                        fingers: touchCount, // Number of fingers used
+                        xStart: parseInt(xDown, 10),
+                        xEnd: parseInt((changedTouches[0] || {}).clientX || -1, 10),
+                        yStart: parseInt(yDown, 10),
+                        yEnd: parseInt((changedTouches[0] || {}).clientY || -1, 10)
+                    };
+
+                    // fire `swiped` event event on the element that started the swipe
+                    startEl.dispatchEvent(new CustomEvent('swiped', { bubbles: true, cancelable: true, detail: eventData }));
+
+                    // fire `swiped-dir` event on the element that started the swipe
+                    startEl.dispatchEvent(new CustomEvent(eventType, { bubbles: true, cancelable: true, detail: eventData }));
+                }
+
+                // reset values
+                xDown = null;
+                yDown = null;
+                timeDown = null;
+            }
+            /**
+             * Records current location on touchstart event
+             * @param {object} e - browser event object
+             * @returns {void}
+             */
+            function handleTouchStart(e) {
+
+                // if the element has data-swipe-ignore="true" we stop listening for swipe events
+                if (e.target.getAttribute('data-swipe-ignore') === 'true') return;
+
+                startEl = e.target;
+
+                timeDown = Date.now();
+                xDown = e.touches[0].clientX;
+                yDown = e.touches[0].clientY;
+                xDiff = 0;
+                yDiff = 0;
+                touchCount = e.touches.length;
+            }
+
+            /**
+             * Records location diff in px on touchmove event
+             * @param {object} e - browser event object
+             * @returns {void}
+             */
+            function handleTouchMove(e) {
+
+                if (!xDown || !yDown) return;
+
+                var xUp = e.touches[0].clientX;
+                var yUp = e.touches[0].clientY;
+
+                xDiff = xDown - xUp;
+                yDiff = yDown - yUp;
+            }
+
+            /**
+             * Gets attribute off HTML element or nearest parent
+             * @param {object} el - HTML element to retrieve attribute from
+             * @param {string} attributeName - name of the attribute
+             * @param {any} defaultValue - default value to return if no match found
+             * @returns {any} attribute value or defaultValue
+             */
+            function getNearestAttribute(el, attributeName, defaultValue) {
+
+                // walk up the dom tree looking for attributeName
+                while (el && el !== document.documentElement) {
+
+                    var attributeValue = el.getAttribute(attributeName);
+
+                    if (attributeValue) {
+                        return attributeValue;
+                    }
+
+                    el = el.parentNode;
+                }
+
+                return defaultValue;
+            }
+
+        }(window, document));
+
+    </script>
+
+</body>
+
+</html>
